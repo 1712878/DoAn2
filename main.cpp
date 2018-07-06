@@ -3,14 +3,12 @@
 #include <math.h>
 #include <time.h>
 #define MAX 5
-template <class T>
-void HoanVi(T &a, T &b){
-	T t = a; a = b; b = t;
+void HoanVi(int &a, int &b){
+	int t = a; a = b; b = t;
 }
-template <class T>
-void capPhatNgauNhien(T *&a, T n){
-	T i = 0;
-	a = (T*)malloc(n*sizeof(T));
+void capPhatNgauNhien(int *&a, int n){
+	int i = 0;
+	a = (int*)malloc(n*sizeof(int));
 	if (a == NULL){
 		free(a);
 	}
@@ -19,19 +17,17 @@ void capPhatNgauNhien(T *&a, T n){
 			a[i++] = rand() % (n + 1);
 	}
 }
-template <class T>
-void XuatMang(T *a, T n){
-	for (T i = 0; i < n; i++){
-		printf("%ld\t", a[i]);
+void XuatMang(int *a, int n){
+	for (int i = 0; i < n; i++){
+		printf("%d\t", a[i]);
 	}
 	printf("\n");
 }
-template <class T>
-void InsertionSort(T a[], T n, T &sosanh, T &gan){
-	for (T i = 1; i<n; i++) 
+void InsertionSort(int a[], int n, double &sosanh, double &gan){
+	for (int i = 1; i<n; i++)
 	{
-		T x = a[i], pos = i - 1; gan++;
-		while (pos >= 0 && a[pos] > x) 
+		int x = a[i], pos = i - 1; gan++;
+		while (pos >= 0 && a[pos] > x)
 		{
 			a[pos + 1] = a[pos];
 			pos--;
@@ -41,10 +37,9 @@ void InsertionSort(T a[], T n, T &sosanh, T &gan){
 		a[pos + 1] = x; sosanh++; gan++;
 	}
 }
-template <class T>
-void BubbleSort(T *a, T n, T &sosanh, T &gan){
-	for (T i = 0; i<n - 1; i++){
-		for (T j = n - 1; j>i; j--){
+void BubbleSort(int a[], int n, double &sosanh, double &gan){
+	for (int i = 0; i<n - 1; i++){
+		for (int j = n - 1; j>i; j--){
 			if (a[j] < a[j - 1]){
 				HoanVi(a[j], a[j - 1]);
 				gan += 3;
@@ -53,169 +48,143 @@ void BubbleSort(T *a, T n, T &sosanh, T &gan){
 		}
 	}
 }
-template <class T>
-void ShakerSort(T *a, T n, T &sosanh, T &gan){
+void ShakerSort(int a[], int n, double &sosanh, double &gan){
 	int l = 0, r = n - 1, k = n - 1, j;
-	
+
 	while (l<r)
 	{
-		j = r; 
+		j = r;
 		while (j>l)
 		{
-			if (a[j]<a[j - 1])
+			if (a[j] < a[j - 1])
 			{
 				HoanVi(a[j], a[j - 1]);
-				k = j; 
+				k = j;
 				gan += 3;
 			}
 			sosanh++;
 			j--;
 		}
-		l = k; 
-		j = l; 
+		l = k;
+		j = l;
 		while (j<r)
 		{
 			if (a[j]>a[j + 1])
 			{
 				HoanVi(a[j], a[j + 1]);
-				k = j; 
+				k = j;
 				gan += 3;
 			}
 			sosanh++;
 			j++;
 		}
-		r = k; 
+		r = k;
 	}
 }
-template <class T>
-void ShellSort(T a[], T n, T h[], T k){     
-	for (T i = 0; i < k; i++) 		             
-	for (T j = h[i]; j < n; j++) 
-	{
-		T   x = a[j];                     
-		T   l = j - h[i];
-		while (l >= 0 && x < a[k])                                
-		{    
-			a[l + h[i]] = a[l];
-			l = l - h[i];
+void ShellSort(int* a, int n, double &sosanh, double &gan){
+	int h = 1, X, i, j, c = 0;
+	while (h <= n / 3)
+		h = h * 3 + 1;
+	while (h > 0){
+		for (i = h; i < n; i++){
+			X = a[i];
+			j = i;
+			gan++;
+			while (a[j - h] > X && j > h - 1){
+				a[j] = a[j - h];
+				j -= h;
+				gan++;
+			}
+			sosanh++;
+			a[j] = X;
+			gan++;
 		}
-		a[l + h[i]] = x;
+		h = (h - 1) / 3;
+		c++;
 	}
 }
-template <class T>
-void QuickSort(T a[], T l, T r)
-{
-	T i = l, j = r, x = a[(l + r) / 2];
+void QuickSort(int a[], int l, int r, double &sosanh, double &gan){
+	int i = l, j = r, x = a[(l + r) / 2]; gan++;
 	do {
 		while (a[i] < x) i++;
-		while (a[j] > x) j--;
+		while (a[j] > x) j--; sosanh += 2;
 		if (i <= j){
-			HoanVi(a[i], a[j]);
+			HoanVi(a[i], a[j]); gan += 3;
 			i++; j--;
 		}
 	} while (i < j);
 	if (l < j)
-		QuickSort(a, l, j);
+		QuickSort(a, l, j, sosanh, gan);
 	if (i < r)
-		QuickSort(a, i, r);
+		QuickSort(a, i, r, sosanh, gan);
 }
-template <class T>
-void merge(T* array, T left, T mid, T right)	{
-
-	T temp1[mid - left + 1];
-	T temp2[right - mid];
-	T index_array = left;
-
-	for (T i = 0; i < mid - left + 1; i++)
-		temp1[i] = array[index_array++];
-
-	for (T i = 0; i < right - mid; i++)
-		temp2[i] = array[index_array++];
-
-	T index_temp1 = 0, index_temp2 = 0;
-	index_array = left;
-
-	while (index_temp1 <= mid - left && index_temp2 < right - mid)	{
-
-		if (temp1[index_temp1] < temp2[index_temp2]) 	{
-
-			array[index_array] = temp1[index_temp1];
-			index_temp1++;
+void Merge(int a[], int left, int mid, int right, double &sosanh, double &gan){
+	int *temp; 
+	int i = left; 
+	int j = mid + 1; 
+	temp = new int[right - left + 1]; 
+	for (int k = 0; k <= right - left; k++){
+		if (a[i] < a[j]){
+			temp[k] = a[i]; gan++;
+			i++;
 		}
-		else	{
-
-			array[index_array] = temp2[index_temp2];
-			index_temp2++;
+		else{
+			temp[k] = a[j]; gan++;
+			j++;
 		}
-		index_array++;
-	}
-
-	while (index_temp1 <= mid - left)	{
-
-		array[index_array] = temp1[index_temp1];
-		index_array++;
-		index_temp1++;
-	}
-
-	while (index_temp2 < right - mid)	{
-
-		array[index_array] = temp2[index_temp2];
-		index_array++;
-		index_temp2++;
-	}
-}
-template <class T>
-void merge_sort(T* array, T left, T right)	{
-
-	T mid = (right + left) / 2;
-	if (left < right) 	{
-
-		merge_sort(array, left, mid);
-		merge_sort(array, mid + 1, right);
-		merge(array, left, mid, right);
-	}
-}
-template <class T>
-void Shift(T a[], T l, T r){
-	T   x, i, j;
-	i = l;   j = 2 * l;
-	x = a[i - 1];
-	while (j <= r)
-	{
-		if (j  <  r)
-		if (a[j - 1]   <   a[j])       j = j + 1;
-		if (a[j - 1]  <  x)	return;
-		else
-		{
-			a[i - 1] = a[j - 1];
-			a[j - 1] = x;
-			i = j;
-			j = 2 * i;
+		sosanh++;
+		if (i == mid + 1){
+			while (j <= right){
+				k++;
+				temp[k] = a[j]; gan++;
+				j++;
+			}
+			break;
+		}
+		if (j == right + 1){
+			while (i <= mid){
+				k++;
+				temp[k] = a[i]; gan++;
+				i++;
+			}
+			break;
 		}
 	}
+	for (int k = 0; k <= right - left; k++){
+		a[left + k] = temp[k]; gan++;
+	}
+	delete temp;
 }
-template <class T>
-void TaoHeap(T a[], T N)
-{
-	T   l;
-	l = N / 2;
-	while (l  > 0)
-	{
-		Shift(a, l, N);
-		l = l - 1;
+void MergeSort(int a[], int left, int right, double &sosanh, double &gan){
+	if (right > left){
+		int mid;
+		mid = (left + right) / 2;
+		MergeSort(a, left, mid,sosanh,gan);
+		MergeSort(a, mid + 1, right, sosanh, gan);
+		Merge(a, left, mid, right, sosanh, gan);
 	}
 }
-template <class T>
-void HeapSort(T a[], T N)
-{
-	T   r;
-	TaoHeap(a, N);
-	r = N - 1; //gia tri thuc cua n
-	while (r > 0)
-	{
-		HoanVi(a[0], a[r]);
-		r = r - 1;
-		Shift(a, 1, r + 1);
+void heapify(int arr[], int n, int i, double &sosanh, double &gan){
+	int largest = i;
+	int l = 2 * i + 1;
+	int r = 2 * i + 2;
+
+	if (l < n && arr[l] > arr[largest])
+		largest = l;
+	if (r < n && arr[r] > arr[largest])
+		largest = r;
+	sosanh += 2;
+	if (largest != i){
+		HoanVi(arr[i], arr[largest]);
+		heapify(arr, n, largest, sosanh, gan);
+	}
+}
+void HeapSort(int arr[], int n, double &sosanh, double &gan){
+	for (int i = n / 2 - 1; i >= 0; i--)
+		heapify(arr, n, i, sosanh, gan);
+	for (int i = n - 1; i >= 0; i--){
+		HoanVi(arr[0], arr[i]); gan += 3;
+		heapify(arr, i, 0, sosanh, gan);
 	}
 }
 template <class T>
@@ -249,9 +218,9 @@ void CopyDuLieu(T* a, T* &b, const int n){
 	}
 }
 int main(){
-	long *insertionsort, *bubblesort, *shakersort, *shellsort, *quicksort, *mergesort, *heapsort, *radixsort;
-	long n, sosanh, gan;
-	float thoigian;
+	int *insertionsort, *bubblesort, *shakersort, *shellsort, *quicksort, *mergesort, *heapsort, *radixsort;
+	int n;
+	double thoigian, sosanh, gan;
 	clock_t start_t, end_t;
 	printf("Nhap so phan tu can cap phat ngau nhien: ");  scanf("%d", &n);
 	capPhatNgauNhien(insertionsort, n); // Cấp phát DL gốc 1 lần
@@ -264,7 +233,7 @@ int main(){
 	//XuatMang(insertionsort, n);
 	end_t = clock();
 	thoigian = (float)(end_t - start_t) * 1000 / CLOCKS_PER_SEC;
-	printf("So phep so sanh:%d\nSo phep gan:\t%d\nThoi gian:\t%.3f ms\n\n", sosanh, gan, thoigian);
+	printf("So phep so sanh:%.0lf\nSo phep gan:\t%.0lf\nThoi gian:\t%.3f ms\n\n", sosanh, gan, thoigian);
 	free(insertionsort); //Giải phóng DL sau khi sắp xếp xong
 
 	sosanh = gan = 0;
@@ -275,19 +244,69 @@ int main(){
 	//XuatMang(bubblesort, n);
 	end_t = clock();
 	thoigian = (float)(end_t - start_t) * 1000 / CLOCKS_PER_SEC;
-	printf("So phep so sanh:%d\nSo phep gan:\t%d\nThoi gian:\t%.3f ms\n\n", sosanh, gan, thoigian);
+	printf("So phep so sanh:%.0lf\nSo phep gan:\t%.0lf\nThoi gian:\t%.3f ms\n\n", sosanh, gan, thoigian);
 	free(bubblesort); //Giải phóng DL sau khi sắp xếp xong
 
 	sosanh = gan = 0;
-	//CopyDuLieu(shakersort, shellsort, n); //Copy Dữ liệu gốc trước khi sắp xếp
+	CopyDuLieu(shakersort, shellsort, n); //Copy Dữ liệu gốc trước khi sắp xếp
 	printf("----------\tShakerSort\t------------\n\n");
 	start_t = clock();
 	ShakerSort(shakersort, n, sosanh, gan);
 	//XuatMang(shakersort, n);
 	end_t = clock();
 	thoigian = (float)(end_t - start_t) * 1000 / CLOCKS_PER_SEC;
-	printf("So phep so sanh:%d\nSo phep gan:\t%d\nThoi gian:\t%.3f ms\n\n", sosanh, gan, thoigian);
+	printf("So phep so sanh:%.0lf\nSo phep gan:\t%.0lf\nThoi gian:\t%.3f ms\n\n", sosanh, gan, thoigian);
 	free(shakersort); //Giải phóng DL sau khi sắp xếp xong
 
+	sosanh = gan = 0;
+	CopyDuLieu(shellsort, quicksort, n); //Copy Dữ liệu gốc trước khi sắp xếp
+	printf("----------\tShellSort\t------------\n\n");
+	start_t = clock();
+	ShellSort(shellsort, n, sosanh, gan);
+	//XuatMang(shellsort, n);
+	end_t = clock();
+	thoigian = (float)(end_t - start_t) * 1000 / CLOCKS_PER_SEC;
+	printf("So phep so sanh:%.0lf\nSo phep gan:\t%.0lf\nThoi gian:\t%.3f ms\n\n", sosanh, gan, thoigian);
+	free(shellsort); //Giải phóng DL sau khi sắp xếp xong
+
+	sosanh = gan = 0;
+	CopyDuLieu(quicksort, mergesort, n); //Copy Dữ liệu gốc trước khi sắp xếp
+	printf("----------\tQuickSort\t------------\n\n");
+	start_t = clock();
+	QuickSort(quicksort, 0, n-1, sosanh, gan);
+	//XuatMang(quicksort, n);
+	end_t = clock();
+	thoigian = (float)(end_t - start_t) * 1000 / CLOCKS_PER_SEC;
+	printf("So phep so sanh:%.0lf\nSo phep gan:\t%.0lf\nThoi gian:\t%.3f ms\n\n", sosanh, gan, thoigian);
+	free(quicksort); //Giải phóng DL sau khi sắp xếp xong
+	
+	sosanh = gan = 0;
+	CopyDuLieu(mergesort, heapsort, n); //Copy Dữ liệu gốc trước khi sắp xếp
+	printf("----------\tMergeSort\t------------\n\n");
+	start_t = clock();
+	MergeSort(mergesort, 0, n - 1, sosanh, gan);
+	//XuatMang(mergesort, n);
+	end_t = clock();
+	thoigian = (float)(end_t - start_t) * 1000 / CLOCKS_PER_SEC;
+	printf("So phep so sanh:%.0lf\nSo phep gan:\t%.0lf\nThoi gian:\t%.3f ms\n\n", sosanh, gan, thoigian);
+	free(mergesort); //Giải phóng DL sau khi sắp xếp xong
+	
+	sosanh = gan = 0;
+	CopyDuLieu(heapsort, radixsort, n); //Copy Dữ liệu gốc trước khi sắp xếp
+	printf("----------\tHeapSort\t------------\n\n");
+	start_t = clock();
+	HeapSort(heapsort, n, sosanh, gan);
+	//XuatMang(heapsort, n);
+	end_t = clock();
+	thoigian = (float)(end_t - start_t) * 1000 / CLOCKS_PER_SEC;
+	printf("So phep so sanh:%.0lf\nSo phep gan:\t%.0lf\nThoi gian:\t%.3f ms\n\n", sosanh, gan, thoigian);
+	free(heapsort); //Giải phóng DL sau khi sắp xếp xong
+
+
+	free(radixsort); //Giải phóng DL sau khi sắp xếp xong
+	/*double x;
+	scanf("%lf", &x);
+	x++;
+	printf("%.0lf\n", x);*/
 	return 0;
 }
