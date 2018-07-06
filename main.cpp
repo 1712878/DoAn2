@@ -93,6 +93,7 @@ void ShellSort(int* a, int n, double &sosanh, double &gan){
 				a[j] = a[j - h];
 				j -= h;
 				gan++;
+				sosanh++;
 			}
 			sosanh++;
 			a[j] = X;
@@ -105,8 +106,16 @@ void ShellSort(int* a, int n, double &sosanh, double &gan){
 void QuickSort(int a[], int l, int r, double &sosanh, double &gan){
 	int i = l, j = r, x = a[(l + r) / 2]; gan++;
 	do {
-		while (a[i] < x) i++;
-		while (a[j] > x) j--; sosanh += 2;
+		while (a[i] < x){
+			sosanh++;
+			i++;
+		}
+		sosanh++;
+		while (a[j] > x){
+			sosanh++;
+			j--;
+		}
+		sosanh++;
 		if (i <= j){
 			HoanVi(a[i], a[j]); gan += 3;
 			i++; j--;
@@ -174,7 +183,7 @@ void heapify(int arr[], int n, int i, double &sosanh, double &gan){
 		largest = r;
 	sosanh += 2;
 	if (largest != i){
-		HoanVi(arr[i], arr[largest]);
+		HoanVi(arr[i], arr[largest]); gan += 3;
 		heapify(arr, n, largest, sosanh, gan);
 	}
 }
@@ -217,13 +226,13 @@ void RadixSort(int arr[], int n, double &sosanh, double &gan){
 	for (int exp = 1; m / exp > 0; exp *= 10)
 		countSort(arr, n, exp, sosanh, gan);
 }
-template <class T>
-void CopyDuLieu(T* a, T* &b, const int n){
-	b = (T*)malloc(n*sizeof(T));
-	for (T i = 0; i < n; i++){
+void CopyDuLieu(int* a, int* &b, const int n){
+	b = (int*)malloc(n*sizeof(int));
+	for (int i = 0; i < n; i++){
 		b[i] = a[i];
 	}
 }
+
 int main(){
 	int *insertionsort, *bubblesort, *shakersort, *shellsort, *quicksort, *mergesort, *heapsort, *radixsort;
 	int n;
@@ -239,8 +248,8 @@ int main(){
 	InsertionSort(insertionsort, n, sosanh, gan);
 	//XuatMang(insertionsort, n);
 	end_t = clock();
-	thoigian = (float)(end_t - start_t) * 1000 / CLOCKS_PER_SEC;
-	printf("So phep so sanh:%.0lf\nSo phep gan:\t%.0lf\nThoi gian:\t%.3f ms\n\n", sosanh, gan, thoigian);
+	thoigian = (float)(end_t - start_t) * 1000000 / CLOCKS_PER_SEC;
+	printf("So phep so sanh:%.0lf\nSo phep gan:\t%.0lf\nThoi gian:\t%.1f microsecond\n\n", sosanh, gan, thoigian);
 	free(insertionsort); //Giải phóng DL sau khi sắp xếp xong
 
 	sosanh = gan = 0;
@@ -250,8 +259,8 @@ int main(){
 	BubbleSort(bubblesort, n, sosanh, gan);
 	//XuatMang(bubblesort, n);
 	end_t = clock();
-	thoigian = (float)(end_t - start_t) * 1000 / CLOCKS_PER_SEC;
-	printf("So phep so sanh:%.0lf\nSo phep gan:\t%.0lf\nThoi gian:\t%.3f ms\n\n", sosanh, gan, thoigian);
+	thoigian = (float)(end_t - start_t) * 1000000 / CLOCKS_PER_SEC;
+	printf("So phep so sanh:%.0lf\nSo phep gan:\t%.0lf\nThoi gian:\t%.1f microsecond\n\n", sosanh, gan, thoigian);
 	free(bubblesort); //Giải phóng DL sau khi sắp xếp xong
 
 	sosanh = gan = 0;
@@ -261,8 +270,8 @@ int main(){
 	ShakerSort(shakersort, n, sosanh, gan);
 	//XuatMang(shakersort, n);
 	end_t = clock();
-	thoigian = (float)(end_t - start_t) * 1000 / CLOCKS_PER_SEC;
-	printf("So phep so sanh:%.0lf\nSo phep gan:\t%.0lf\nThoi gian:\t%.3f ms\n\n", sosanh, gan, thoigian);
+	thoigian = (float)(end_t - start_t) * 1000000 / CLOCKS_PER_SEC;
+	printf("So phep so sanh:%.0lf\nSo phep gan:\t%.0lf\nThoi gian:\t%.1f microsecond\n\n", sosanh, gan, thoigian);
 	free(shakersort); //Giải phóng DL sau khi sắp xếp xong
 
 	sosanh = gan = 0;
@@ -272,8 +281,8 @@ int main(){
 	ShellSort(shellsort, n, sosanh, gan);
 	//XuatMang(shellsort, n);
 	end_t = clock();
-	thoigian = (float)(end_t - start_t) * 1000 / CLOCKS_PER_SEC;
-	printf("So phep so sanh:%.0lf\nSo phep gan:\t%.0lf\nThoi gian:\t%.3f ms\n\n", sosanh, gan, thoigian);
+	thoigian = (float)(end_t - start_t) * 1000000 / CLOCKS_PER_SEC;
+	printf("So phep so sanh:%.0lf\nSo phep gan:\t%.0lf\nThoi gian:\t%.1f microsecond\n\n", sosanh, gan, thoigian);
 	free(shellsort); //Giải phóng DL sau khi sắp xếp xong
 
 	sosanh = gan = 0;
@@ -283,8 +292,8 @@ int main(){
 	QuickSort(quicksort, 0, n-1, sosanh, gan);
 	//XuatMang(quicksort, n);
 	end_t = clock();
-	thoigian = (float)(end_t - start_t) * 1000 / CLOCKS_PER_SEC;
-	printf("So phep so sanh:%.0lf\nSo phep gan:\t%.0lf\nThoi gian:\t%.3f ms\n\n", sosanh, gan, thoigian);
+	thoigian = (float)(end_t - start_t) * 1000000 / CLOCKS_PER_SEC;
+	printf("So phep so sanh:%.0lf\nSo phep gan:\t%.0lf\nThoi gian:\t%.1f microsecond\n\n", sosanh, gan, thoigian);
 	free(quicksort); //Giải phóng DL sau khi sắp xếp xong
 	
 	sosanh = gan = 0;
@@ -294,8 +303,8 @@ int main(){
 	MergeSort(mergesort, 0, n - 1, sosanh, gan);
 	//XuatMang(mergesort, n);
 	end_t = clock();
-	thoigian = (float)(end_t - start_t) * 1000 / CLOCKS_PER_SEC;
-	printf("So phep so sanh:%.0lf\nSo phep gan:\t%.0lf\nThoi gian:\t%.3f ms\n\n", sosanh, gan, thoigian);
+	thoigian = (float)(end_t - start_t) * 1000000 / CLOCKS_PER_SEC;
+	printf("So phep so sanh:%.0lf\nSo phep gan:\t%.0lf\nThoi gian:\t%.1f microsecond\n\n", sosanh, gan, thoigian);
 	free(mergesort); //Giải phóng DL sau khi sắp xếp xong
 	
 	sosanh = gan = 0;
@@ -305,8 +314,8 @@ int main(){
 	HeapSort(heapsort, n, sosanh, gan);
 	//XuatMang(heapsort, n);
 	end_t = clock();
-	thoigian = (float)(end_t - start_t) * 1000 / CLOCKS_PER_SEC;
-	printf("So phep so sanh:%.0lf\nSo phep gan:\t%.0lf\nThoi gian:\t%.3f ms\n\n", sosanh, gan, thoigian);
+	thoigian = (float)(end_t - start_t) * 1000000 / CLOCKS_PER_SEC;
+	printf("So phep so sanh:%.0lf\nSo phep gan:\t%.0lf\nThoi gian:\t%.1f microsecond\n\n", sosanh, gan, thoigian);
 	free(heapsort); //Giải phóng DL sau khi sắp xếp xong
 
 	sosanh = gan = 0;
@@ -315,8 +324,8 @@ int main(){
 	RadixSort(radixsort, n, sosanh, gan);
 	//XuatMang(radixsort, n);
 	end_t = clock();
-	thoigian = (float)(end_t - start_t) * 1000 / CLOCKS_PER_SEC;
-	printf("So phep so sanh:%.0lf\nSo phep gan:\t%.0lf\nThoi gian:\t%.3f ms\n\n", sosanh, gan, thoigian);
+	thoigian = (float)(end_t - start_t) * 1000000 / CLOCKS_PER_SEC;
+	printf("So phep so sanh:%.0lf\nSo phep gan:\t%.0lf\nThoi gian:\t%.1f microsecond\n\n", sosanh, gan, thoigian);
 	free(radixsort); //Giải phóng DL sau khi sắp xếp xong
 
 	return 0;
