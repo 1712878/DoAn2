@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <math.h>
 #include <time.h>
-#define MAX 5
 void HoanVi(int &a, int &b){
 	int t = a; a = b; b = t;
 }
@@ -187,28 +186,36 @@ void HeapSort(int arr[], int n, double &sosanh, double &gan){
 		heapify(arr, i, 0, sosanh, gan);
 	}
 }
-template <class T>
-void RadixSort(T *a, T n)
-{
-	T i, b[MAX], m = a[0], exp = 1;
+int getMax(int arr[], int n, double &sosanh, double &gan){
+	int mx = arr[0]; gan++;
+	for (int i = 1; i < n; i++){
+		if (arr[i] > mx){
+			mx = arr[i]; gan++;
+		}
+		sosanh++;
+	}
+	return mx;
+}
+void countSort(int arr[], const int n, int exp, double &sosanh, double &gan){
+	int * output = (int*)malloc(n*sizeof(int));
+	int i, count[10] = { 0 };
 	for (i = 0; i < n; i++)
-	{
-		if (a[i] > m)
-			m = a[i];
+		count[(arr[i] / exp) % 10]++;
+	for (i = 1; i < 10; i++)
+		count[i] += count[i - 1];
+	for (i = n - 1; i >= 0; i--){
+		output[count[(arr[i] / exp) % 10] - 1] = arr[i]; gan++;
+		count[(arr[i] / exp) % 10]--;
 	}
-	while (m / exp > 0)
-	{
-		T bucket[10] = { 0 };
-		for (i = 0; i < n; i++)
-			bucket[a[i] / exp % 10]++;
-		for (i = 1; i < 10; i++)
-			bucket[i] += bucket[i - 1];
-		for (i = n - 1; i >= 0; i--)
-			b[--bucket[a[i] / exp % 10]] = a[i];
-		for (i = 0; i < n; i++)
-			a[i] = b[i];
-		exp *= 10;
+	for (i = 0; i < n; i++){
+		arr[i] = output[i]; gan++;
 	}
+	free(output);
+}
+void RadixSort(int arr[], int n, double &sosanh, double &gan){
+	int m = getMax(arr, n, sosanh, gan);
+	for (int exp = 1; m / exp > 0; exp *= 10)
+		countSort(arr, n, exp, sosanh, gan);
 }
 template <class T>
 void CopyDuLieu(T* a, T* &b, const int n){
@@ -302,11 +309,15 @@ int main(){
 	printf("So phep so sanh:%.0lf\nSo phep gan:\t%.0lf\nThoi gian:\t%.3f ms\n\n", sosanh, gan, thoigian);
 	free(heapsort); //Giải phóng DL sau khi sắp xếp xong
 
-
+	sosanh = gan = 0;
+	printf("----------\tRadixSort\t------------\n\n");
+	start_t = clock();
+	RadixSort(radixsort, n, sosanh, gan);
+	//XuatMang(radixsort, n);
+	end_t = clock();
+	thoigian = (float)(end_t - start_t) * 1000 / CLOCKS_PER_SEC;
+	printf("So phep so sanh:%.0lf\nSo phep gan:\t%.0lf\nThoi gian:\t%.3f ms\n\n", sosanh, gan, thoigian);
 	free(radixsort); //Giải phóng DL sau khi sắp xếp xong
-	/*double x;
-	scanf("%lf", &x);
-	x++;
-	printf("%.0lf\n", x);*/
+
 	return 0;
 }
